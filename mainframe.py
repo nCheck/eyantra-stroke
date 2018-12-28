@@ -1,8 +1,10 @@
 import tkinter as tk
+from tkinter import messagebox
+import requests
 
 #Functions
 
-def loadData( load ):
+def openFiles():
 
     f1 = open('bp.txt', mode='r')
     f2 = open('ecg.txt', mode='r')
@@ -19,6 +21,13 @@ def loadData( load ):
     f1.close()
     f2.close()
 
+    return vals
+
+
+def loadData(load):
+
+    vals = openFiles()
+
     # "BP": BP, "HR": HR, "AHL": AHL, "BHL": BHL, "THL": THL
 
     load['BP']['text'] = "{} / {}".format(vals[0],  vals[1])
@@ -32,10 +41,50 @@ def loadData( load ):
 
 
 
+def calData( ):
+
+    vals = openFiles()
+
+
+    prob = 45
+
+    URL = "http://localhost:9966/api/test"
+
+    data = {'prob': prob}
+
+    # sending get request and saving the response as response object
+    r = requests.post(url=URL, data=data)
+
+    # extracting data in json format
+    resp = r.json()
+
+    print(resp)
+
+    msg = messagebox.showinfo("Prediction", "There is {} % of Stroke".format(prob))
 
 
 
 
+def sendData():
+
+
+    vals = openFiles()
+
+    URL = "http://localhost:9966/api/upload"
+
+    data = {
+        "BP_sys": vals[0], "BP_dys": vals[1],
+        "HR": vals[2], "AH": vals[3], "AL": vals[4],
+        "BH": vals[5], "BL": vals[6], "TH": vals[7], "TL": vals[8],
+        "GH": vals[9], "GL": vals[10], "patientId": 100
+    }
+
+    r = requests.post(url=URL, data=data)
+
+    resp = r.json()
+    print(resp)
+
+    msg = messagebox.showinfo("Status", resp['status'])
 
 
 
@@ -89,8 +138,19 @@ GHL.grid(row = 160, column = 60, ipadx = 10, ipady = 10)
 
 loadAbles = {"BP": BP, "HR": HR, "AHL":  AHL, "BHL":  BHL, "THL": THL, "GHL": GHL}
 
-B = tk.Button(top, text = "Load Data", command = lambda : loadData( loadAbles ))    #unpacking tuple and sending
+
+
+
+B = tk.Button(top, text = "Load Data", command = lambda : loadData(loadAbles))    #unpacking tuple and sending
 B.grid(row = 180 , column = 52 , ipadx = 10, ipady = 5)
+
+
+B = tk.Button(top, text = "Calculate", command = lambda : calData())    #sending Value
+B.grid(row = 200 , column = 52 , ipadx = 10, ipady = 5)
+
+
+B = tk.Button(top, text = "Send Data", command = lambda : sendData())    #sending Value
+B.grid(row = 220 , column = 52 , ipadx = 10, ipady = 5)
 
 
 top.mainloop()

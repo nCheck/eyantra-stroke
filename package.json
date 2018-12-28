@@ -11,6 +11,7 @@
     "url": "git+https://github.com/nCheck/eyantra-stroke.git"
   },
   "dependencies": {
+    "@tensorflow/tfjs": "^0.14.1",
     "body-parser": "~1.15.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",

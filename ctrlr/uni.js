@@ -1,19 +1,25 @@
 var mongoose = require('mongoose')
 
+global.fetch = require('node-fetch')
+
 var Patient = mongoose.model('Patient'),
     Doctor = mongoose.model('Doctor'),
     Record = mongoose.model('Record');
 
 
+var tf = require('@tensorflow/tfjs');
 
 
 
 
-module.exports.trialGet = (req, res) =>{
+module.exports.trialGet = async(req, res) =>{
 
     console.log(req.query, " q ")
     console.log(req.body , " b ")
 
+    const model = await tf.loadModel('http://localhost:9966/public/model.json');
+
+    console.log(model)
     res.send({"status" : "Done"})
 }
 

@@ -1,0 +1,28 @@
+{
+  "name": "eyantra-stroke",
+  "version": "1.0.0",
+  "description": "server side for eYantra Project",
+  "main": "app.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nCheck/eyantra-stroke.git"
+  },
+  "dependencies": {
+    "body-parser": "~1.15.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "ejs": "^2.6.1",
+    "express": "~4.14.0",
+    "mongoose": "^5.4.0",
+    "morgan": "~1.7.0"
+  },
+  "author": "nCheck & ashleylobo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nCheck/eyantra-stroke/issues"
+  },
+  "homepage": "https://github.com/nCheck/eyantra-stroke#readme"
+}

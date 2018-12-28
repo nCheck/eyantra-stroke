@@ -65,18 +65,18 @@ def calData( ):
 
 
 
-def sendData():
+def sendData(patId):
 
 
     vals = openFiles()
 
-    URL = "http://localhost:9966/api/upload"
+    URL = "https://stroke-predict.herokuapp.com/api/upload"
 
     data = {
         "BP_sys": vals[0], "BP_dys": vals[1],
         "HR": vals[2], "AH": vals[3], "AL": vals[4],
         "BH": vals[5], "BL": vals[6], "TH": vals[7], "TL": vals[8],
-        "GH": vals[9], "GL": vals[10], "patientId": 100
+        "GH": vals[9], "GL": vals[10], "patientId": patId
     }
 
     r = requests.post(url=URL, data=data)
@@ -88,12 +88,17 @@ def sendData():
 
 
 
+def clearMe(event):
+
+    event.widget.delete(0,10)
+
+
 
 #GUI Drawing
 
 top = tk.Tk()
 
-top.geometry("400x400")
+top.geometry("500x500")
 
 L1 = tk.Label(top, text = "BP (Sys/Dys)")
 L1.grid(row = 60, column = 50, ipadx = 10, ipady = 10)
@@ -148,9 +153,13 @@ B.grid(row = 180 , column = 52 , ipadx = 10, ipady = 5)
 B = tk.Button(top, text = "Calculate", command = lambda : calData())    #sending Value
 B.grid(row = 200 , column = 52 , ipadx = 10, ipady = 5)
 
+E = tk.Entry(top, bd=5)    #sending Value
+E.insert(0, "Patient Id")
+E.bind('<Button-1>', clearMe)
+E.grid(row = 220 , column = 52 , ipadx = 5, ipady = 5)
 
-B = tk.Button(top, text = "Send Data", command = lambda : sendData())    #sending Value
-B.grid(row = 220 , column = 52 , ipadx = 10, ipady = 5)
+B = tk.Button(top, text = "Send Data", command = lambda : sendData( E.get() ))    #sending Value
+B.grid(row = 240 , column = 52 , ipadx = 10, ipady = 5)
 
 
 top.mainloop()

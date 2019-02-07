@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import t from 'tcomb-form-native';
 import { Container, Content, Footer, Button } from 'native-base'
-
+import { DocumentPicker } from 'expo';
 // import axios from 'axios';
 
 import IP from '../constants/Address'
@@ -28,38 +28,65 @@ var res = t.enums({
 })
 
 const fund = t.struct({
-    name: t.String,
-    id: t.Number,
-    age: t.Number,
-    hypertension: t.Boolean,
-    heart_disease : t.Boolean,
-    height : t.Number,
-    weight : t.Number,
-    work_type : work,
-    res_type : res
+    systolic: t.Number,
+    diastolic: t.Number,
+    temperature : t.Number,
+    heartrate : t.Number,
 
   });
 
 const Form = t.form.Form;
 
-export default class HomeScreen extends React.Component {
+export default class UploadScreen extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { chosenDate: new Date() , imageData : '' , value : ''  };
+        this.state = { chosenDate: new Date() , fileData : '' , value : ''  };
     
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this._pickDocument = this._pickDocument.bind(this);
       }
       
+    _pickDocument = async () => {
+	    let result = await DocumentPicker.getDocumentAsync({});
+		  this.setState({ fileData : result })
+      console.log( this.state.fileData, "data" );
+	}
+
     handleChange(value) {
         this.setState({value});
     }
 
-    handleSubmit(){
+    async handleSubmit(){
         const value = this._form.getValue();
         console.log(value)
-        this.props.navigation.navigate( 'Upload' , { demoData : value } )
+
+        const data = new FormData();
+        data.append('file', this.state.fileData);
+        data.append('filename', this.state.fileData.name);
+
+        // console.log(data)
+    
+    //     fetch( IP + '/upload', {
+    //       method: 'POST',
+    //       body: data,
+    //     }).then((response) => {
+    //       response.json().then((body) => {
+    //         console.log(body , "upload")
+    //         this.setState({ imageURL: `${IP}/${body.file}` });
+    //       });
+    // });
+    console.log(IP);
+    await fetch(IP)
+    .then((response) => response)
+    .then((responseJson) => {
+      console.log(responseJson);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
     }
 
 
@@ -78,6 +105,12 @@ export default class HomeScreen extends React.Component {
             onChange={ this.handleChange }
             ref={c => this._form = c} 
             />
+
+            <Button full
+            onPress={ this._pickDocument }
+            >
+              <Text style={ styles.text } > Upload EEG </Text>
+            </Button>
 
             </View>
 

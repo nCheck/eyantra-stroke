@@ -4,6 +4,7 @@ import { createStackNavigator, createAppContainer } from 'react-navigation'
 import { Font } from 'expo'; 
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen'
+import UploadScreen from './screens/UploadScreen';
 
 
 
@@ -12,6 +13,7 @@ const MainCon = createStackNavigator(
   {
     Home : { screen : HomeScreen },
     Login : { screen : LoginScreen },
+    Upload : { screen : UploadScreen }
   },
   {
     initialRouteName : 'Login'

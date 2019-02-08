@@ -4,7 +4,7 @@ import t from 'tcomb-form-native';
 import { Container, Content, Footer, Button } from 'native-base'
 import { DocumentPicker } from 'expo';
 // import axios from 'axios';
-
+import axios from 'axios'
 import IP from '../constants/Address'
 
 
@@ -66,26 +66,20 @@ export default class UploadScreen extends React.Component {
         data.append('file', this.state.fileData);
         data.append('filename', this.state.fileData.name);
 
-        // console.log(data)
-    
-    //     fetch( IP + '/upload', {
-    //       method: 'POST',
-    //       body: data,
-    //     }).then((response) => {
-    //       response.json().then((body) => {
-    //         console.log(body , "upload")
-    //         this.setState({ imageURL: `${IP}/${body.file}` });
-    //       });
-    // });
-    console.log(IP);
-    await fetch(IP)
-    .then((response) => response)
-    .then((responseJson) => {
-      console.log(responseJson);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+        var config = { headers: {  
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'}
+        }
+
+        props = this.props
+
+        await axios.post('http://192.168.1.106:9966/api/test', value)
+        .then(res => {
+          // console.log(res);
+          console.log(res.data);
+        }).catch( err =>{
+          console.log( err )
+        } )
 
     }
 
@@ -145,3 +139,21 @@ const styles = StyleSheet.create({
         
     }
 });
+
+
+
+
+
+
+
+        //Demo Get Request
+        // await axios.get("http://192.168.1.106:9966/"  , config
+        // )
+        // .then(function (response) {
+        //   console.log( response.data )
+        //   var opt = response.data
+        //   props.navigation.navigate('Demo' , { other : opt['message'] })
+        // })
+        // .catch(function (error) {
+        //   props.navigation.navigate('Home' , { other : error })
+        // });

@@ -5,6 +5,7 @@ import { Font } from 'expo';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen'
 import UploadScreen from './screens/UploadScreen';
+import DemoScreen from './screens/DemoScreen';
 
 
 
@@ -13,7 +14,8 @@ const MainCon = createStackNavigator(
   {
     Home : { screen : HomeScreen },
     Login : { screen : LoginScreen },
-    Upload : { screen : UploadScreen }
+    Upload : { screen : UploadScreen },
+    Demo : { screen : DemoScreen }
   },
   {
     initialRouteName : 'Login'

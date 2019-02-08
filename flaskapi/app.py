@@ -17,11 +17,20 @@ smokeModel = load('smokemlp.joblib')
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 app.secret_key = 'super secret key'
-CORS(app)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 UPLOAD_FOLDER = './upload'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', '*')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
+
 
 @app.route('/upload', methods=['POST'])
 def fileUpload():
@@ -42,6 +51,7 @@ smdt = [[ 46. ,   0. ,   0. , 120.8,  32.5,   1. ,   0. ,   0. ,   0. ,
 
 @app.route('/', methods=['GET'])
 def home():
+    print("hit")
     ans = smokeModel.predict(smdt)[0]
     print(ans)
     return jsonify( { "ans" : str(ans) } )

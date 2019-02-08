@@ -59,7 +59,7 @@ export default class UploadScreen extends React.Component {
     }
 
     async handleSubmit(){
-        const value = this._form.getValue();
+        var value = this._form.getValue();
         console.log(value)
 
         const data = new FormData();
@@ -71,9 +71,11 @@ export default class UploadScreen extends React.Component {
           'Access-Control-Allow-Origin': '*'}
         }
 
-        props = this.props
+        demoData = this.props.navigation.state.params.demoData
 
-        await axios.post('http://192.168.1.106:9966/api/test', value)
+        value = { ...value , ...demoData }
+
+        await axios.post('http://192.168.1.106:9966/api/test', { form : value })
         .then(res => {
           // console.log(res);
           console.log(res.data);

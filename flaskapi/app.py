@@ -6,6 +6,7 @@ from joblib import load
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
 import logging
+import requests, json
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger('flask_cors').level = logging.DEBUG
@@ -55,5 +56,13 @@ def home():
     ans = smokeModel.predict(smdt)[0]
     print(ans)
     return jsonify( { "ans" : str(ans) } )
+
+@app.route('/test', methods=['POST'])
+def test():
+    print( json.dumps( request.form ) )
+    print( "ansssssssssssss ==" )
+    ans = smokeModel.predict(smdt)[0]
+    print(ans)
+    return jsonify( { "ans" : "done" } )
 
 app.run()

@@ -14,8 +14,10 @@
     "native-base": "^2.11.0",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
+    "react-native-fs": "^2.13.3",
     "react-navigation": "^3.1.4",
-    "tcomb-form-native": "^0.6.20"
+    "tcomb-form-native": "^0.6.20",
+    "xlsx": "^0.14.1"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.0.0"

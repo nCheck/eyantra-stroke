@@ -3,9 +3,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import t from 'tcomb-form-native';
 import { Container, Content, Footer, Button } from 'native-base'
 import { DocumentPicker } from 'expo';
-// import axios from 'axios';
 import axios from 'axios'
 import IP from '../constants/Address'
+// import reader from '../ctrlr/file'
 
 
 // ['age', 'hypertension', 'heart_disease', 'bmi', '[work_type_Govt_job',
@@ -41,17 +41,35 @@ export default class UploadScreen extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { chosenDate: new Date() , fileData : '' , value : ''  };
+        this.state = { chosenDate: new Date() , selectedFile : '' , value : ''  };
     
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this._pickDocument = this._pickDocument.bind(this);
+        this.handleUpload = this.handleUpload.bind(this);
       }
+
+      async handleUpload() {
+        const data = new FormData()
+        data.append('file', this.state.selectedFile, this.state.selectedFile.name)
+        console.log(data)
+        await axios.post(IP+':9966/api/uploadFile', data )
+        .then(res => {
+          // console.log(res);
+          console.log(res.data);
+        }).catch( err =>{
+          console.log( err )
+        } )
+    
+      }      
       
+
     _pickDocument = async () => {
-	    let result = await DocumentPicker.getDocumentAsync({});
-		  this.setState({ fileData : result })
-      console.log( this.state.fileData, "data" );
+      let result = await DocumentPicker.getDocumentAsync({});
+      result['type'] = 'application/xlsx';
+      this.setState({ selectedFile : result })
+      this.handleUpload();
+
 	}
 
     handleChange(value) {
@@ -63,8 +81,8 @@ export default class UploadScreen extends React.Component {
         console.log(value)
 
         const data = new FormData();
-        data.append('file', this.state.fileData);
-        data.append('filename', this.state.fileData.name);
+        // data.append('file', this.state.fileData);
+        // data.append('filename', this.state.fileData.name);
 
         var config = { headers: {  
           'Content-Type': 'application/json',
@@ -75,7 +93,7 @@ export default class UploadScreen extends React.Component {
 
         value = { ...value , ...demoData }
 
-        await axios.post('http://192.168.1.106:9966/api/test', { form : value })
+        await axios.post(IP+':9966/api/predict', { form : value })
         .then(res => {
           // console.log(res);
           console.log(res.data);

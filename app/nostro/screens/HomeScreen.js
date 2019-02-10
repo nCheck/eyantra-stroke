@@ -3,15 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import t from 'tcomb-form-native';
 import { Container, Content, Footer, Button } from 'native-base'
 
-// import axios from 'axios';
 
-import IP from '../constants/Address'
-
-
-// ['age', 'hypertension', 'heart_disease', 'bmi', '[work_type_Govt_job',
-//        '[work_type_Never_worked', '[work_type_Private',
-//        '[work_type_Self-employed', '[work_type_children', 'res_type_Rural',
-//        'res_type_Urban']
 
 var work = t.enums({
     Govt_job : 'Government',

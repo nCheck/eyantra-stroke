@@ -105,6 +105,13 @@ export default class UploadScreen extends React.Component {
         var value = this._form.getValue();
         const data = { ...value , gammaMid : this.state.gammaMid , ...this.props.navigation.state.params.demoData }
         console.log(data)
+
+        await axios.post(IP+':5000/predict', { data : data } ).then( res =>{
+          console.log(res.data)
+        } ).catch( err =>{
+          console.log( "Error" , err )
+        } )
+
         this.props.navigation.navigate( 'Doctor' , { prediction : true } )
 
     }

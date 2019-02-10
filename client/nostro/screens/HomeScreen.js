@@ -27,6 +27,13 @@ var res = t.enums({
 
 })
 
+var smk = t.enums({
+    formerly : 'formerly',
+    No : 'No',
+    Yes : 'Yes'
+
+})
+
 const fund = t.struct({
     name: t.String,
     id: t.Number,
@@ -37,7 +44,7 @@ const fund = t.struct({
     weight : t.Number,
     work_type : work,
     res_type : res,
-    smoke : t.Boolean,
+    smoke : smk,
     equip : t.Boolean
 
   });

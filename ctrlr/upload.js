@@ -1,15 +1,41 @@
-// Your Requirments goes here
-var express=require("express");
+/*
+
+# Project Name: AI Based Early Stroke Detection 
+# Author List: Nehal Kalnad,Ashley Lobo, e-Yantra Team 
+# Filename: upload.js 
+# Functions: uploadEEG, uploadCSV, loadCSV
+# Global Variables:	multer, request, fs
+
+
+*/	
+
+
+
+
+
+
 const multer = require('multer');
-const path = require('path');
-var parser=require('body-parser');
 var request = require('request');
 
-var app    = express();
-app.use(parser.urlencoded({extended:true}));
-const fs=require('fs');
 
-module.exports.uploadEEG = (req , res , next) =>{
+
+
+
+/**
+
+
+	* Function Name: uploadEEG
+	* Input: 		EEG file
+	* Output: 		upload Status
+	* Logic: 		stores file on local filesystem
+	* Example Call:	post request to "/uploadEEG"
+
+
+
+ **/
+
+
+module.exports.uploadEEG = (req , res ) =>{
 	const storage = multer.diskStorage({
 	  destination: './flaskapi/upload',
 	  filename: function(req, file, cb){
@@ -31,6 +57,23 @@ module.exports.uploadEEG = (req , res , next) =>{
 	});
 
 }
+
+
+/**
+
+
+	* Function Name: uploadCSV
+	* Input: 		CSV file
+	* Output: 		upload Status
+	* Logic: 		stores file on local filesystem
+	* Example Call:	post request to "/uploadCSV"
+
+
+
+ **/
+
+
+
 
 module.exports.uploadCSV = (req , res , next) =>{
 	const storage = multer.diskStorage({
@@ -56,26 +99,28 @@ module.exports.uploadCSV = (req , res , next) =>{
 
 }
 
-module.exports.deleteFile = (req , res ) =>{
 
-	var tmp_path ='./uploads/temp.xlsx';
-	fs.unlink(tmp_path, function(err) {
-			if (err) throw err;
-			console.log('File uploaded Deleted ' );
-	});
-	res.send('Done');
-}
+/**
 
 
+	* Function Name: loadCSV
+	* Input: 		none
+	* Output: 		data stored in temp.csv (BP, Heartrate, Temperature)  
+	* Logic: 		makes api request to flask server
+	* Example Call:	get request to "/loadCSV"
 
 
 
-//Reading========
+ **/
+
+
+
+
+
 
 module.exports.loadCSV = async (req, res) =>{
 
 	await request('http://localhost:5000/loadCSV', function (error, response, body) {
-		console.log('body:', body); // Print the HTML for the Google homepage.
 		res.send({data : body})
 	});
 

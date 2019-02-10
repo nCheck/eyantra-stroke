@@ -1,7 +1,21 @@
+/*
+
+# Project Name: AI Based Early Stroke Detection 
+# Author List: Nehal Kalnad,Ashley Lobo, e-Yantra Team 
+# Filename: app.js 
+# Functions: 
+# Global Variables:	express, app, port
+
+
+*/	
+
+
+
+
+
 var express=require('express');
 var app=express();
 var parser                = require('body-parser');
-const dir                 = __dirname;
 const port                =  process.env.PORT || 9966;
 require('./model/db');
 

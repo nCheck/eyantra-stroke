@@ -1,6 +1,18 @@
+/*
+
+# Project Name: AI Based Early Stroke Detection 
+# Author List: Nehal Kalnad,Ashley Lobo, e-Yantra Team 
+# Filename: uni.js 
+# Functions: uploadRecord
+# Global Variables:	mongoose, request, Patient, Record, Doctor
+
+
+*/	
+
+
+
 var mongoose = require('mongoose')
 var request = require('request')
-global.fetch = require('node-fetch')
 
 var Patient = mongoose.model('Patient'),
     Doctor = mongoose.model('Doctor'),
@@ -8,30 +20,18 @@ var Patient = mongoose.model('Patient'),
 
 
 
+/**
 
 
-module.exports.trialGet = async(req, res) =>{
-
-    console.log(req.query, " q ")
-    console.log(req.body , " b ")
-
-    const model = await tf.loadModel('http://localhost:9966/public/model.json');
-
-    console.log(model)
-    res.send({"status" : "Done"})
-}
+	* Function Name: uploadRecord
+	* Input: 		record of patient
+	* Output: 		upload Status
+	* Logic: 		uploads record to mLab server
+	* Example Call:	post request to "/uploadRecod"
 
 
 
-module.exports.trialPost = (req, res) =>{
-
-    console.log(req.query, " q ")
-    console.log(req.body , " b ")
-
-    res.send({"status" : "Done"})
-}
-
-
+ **/
 
 
 
@@ -60,21 +60,4 @@ module.exports.uploadRecord = (req, res)=>{
 
 }
 
-module.exports.predict = (req, res) =>{
 
-    console.log(req.query, " q ")
-    console.log(req.body , " b ")
-
-    request.post({url:'http://localhost:5000/test', 
-                    form: req.body.form}, function(err,httpResponse,body){
-        
-                        if(err){
-                            console.log("Error", err)
-                        }else{
-                            console.log(body)
-                        }
-
-     })    
-
-    res.send({"status" : "Done"})
-}

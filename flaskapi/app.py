@@ -1,3 +1,15 @@
+"""
+
+# Project Name: AI Based Early Stroke Detection 
+# Author List: Nehal Kalnad,Ashley Lobo, e-Yantra Team 
+# Filename: app.py 
+# Functions: loadCSV , loadEEG , checker, predict
+# Global Variables:	smokeModel , scaler, app
+
+
+"""			
+
+
 import flask
 import os
 from flask import jsonify, request
@@ -5,14 +17,9 @@ from flask import flash, redirect, url_for, session
 from joblib import load
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
-import logging
 import requests, json
 import pandas as pd
 
-
-logging.basicConfig(level=logging.INFO)
-logging.getLogger('flask_cors').level = logging.DEBUG
-logger = logging.getLogger('HELLO WORLD')
 
 
 
@@ -28,48 +35,24 @@ app.config["DEBUG"] = True
 app.secret_key = 'super secret key'
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-UPLOAD_FOLDER = './upload'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', '*')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-    return response
 
 
-@app.route('/upload', methods=['POST'])
-def fileUpload():
-    target=os.path.join(UPLOAD_FOLDER,'test_docs')
-    if not os.path.isdir(target):
-        os.mkdir(target)
-    logger.info("welcome to upload`")
-    file = request.files['file'] 
-    filename = (file.filename)
-    destination="/".join([target, filename])
-    file.save(destination)
-    session['uploadFilePath']=destination
-    response="Whatever you wish too return"
-    return response
+"""
 
-smdt = [ 0.27209932, -0.49484754, -0.39897751, -0.3379889 ,  2.56550825,
-       -0.0427843 , -1.25554587, -0.56775498, -0.10375124,  1.01120843,
-       -1.01120843, -0.65142889,  1.02465722, -0.52217225]
+	* Function Name: 	loadCSV
+	* Input: 		temp.csv uploaded in upload folder
+	* Output: 		systolic, diastolic, heartrate and temperature data.
+	* Logic: 		function uses pandas library to read data which was logged at tera-term
+	* Example Call:	get request to "/loadCSV"
 
-@app.route('/', methods=['GET'])
-def home():
-    print("hit")
-    ans = smokeModel.predict(smdt)[0]
-    print(ans)
-    return jsonify( { "ans" : str(ans) } )
 
+"""
 
 
 @app.route('/loadCSV', methods=['GET'])
-def data():
+def loadCSV():
     print("loaded")
     testData = pd.read_csv("upload/temp.csv")
     print(testData)
@@ -78,19 +61,62 @@ def data():
     print()
     return jsonify( { 'sys': data[0] , 'dis' : data[1], 'hrt' : data[2], 'temp' : testData[data[1]][0]  } )
 
+
+
+"""
+
+	* Function Name: 	loadEEG
+	* Input: 		eeg.csv uploaded in upload folder
+	* Output: 		gammaMid value
+	* Logic: 		function uses pandas library to read data.
+	* Example Call:	get request to "/loadEEG"	
+
+
+"""
+
+
+
 @app.route('/loadEEG', methods=['GET'])
-def gamma():
+def loadEEG():
     print("loaded")
     df = pd.read_csv('upload/eeg.csv')
     data = df['gammaMid'].median()
     print()
     return jsonify( { 'gammaMid' : data } )
 
+
+
+"""
+
+	* Function Name: 	checker
+	* Input: 		val,  need
+	* Output: 		1 or 0
+	* Logic: 		one hot encoding of input data
+	* Example Call:	checker('Rural', res_type)	
+
+
+"""
+
+
 def checker(val,need = True):
     return 1 if val == need else 0
 
+
+"""
+
+	* Function Name: predict	
+	* Input: age, hypertension, heart_disease , height, weight, 
+    *        work_type, res_type, smoke,systolic, diastolic, temperature , heartrate ,
+	* Output: 	stroke(boolean)	
+	* Logic: 	it takes all demographic input, converts it into form accepted by our machine learning model.
+    *           it takes input taken by sensors and applies simple if-else logic based on analysis
+    *           combining the the probablities of both, we get final probabilty which will help us to predict stroke. 	
+	* Example Call:	post request to "/predict"	
+"""
+
+
 @app.route('/predict', methods=['POST'])
-def test():
+def predict():
     # print( json.dumps( request.json['data'] ) )
 
     data = request.json['data'] 
@@ -131,44 +157,22 @@ def test():
         ans[1] = 0
 
     count=0
-    if data['systolic']>200 and data['diastolic']>100:
+    if data['systolic']> 199 and data['diastolic']>100:
         count+=1
-    if data['temperature']> 42:
+    if data['temperature']> 41:
         count+=1
-    if data['gammaMid']>9769:
+    if data['gammaMid'] > 9769:
         count+=1
-    predict=0.4*(ans[1])+0.6*(1*count/3)
+    predict = 0.25*(ans[1])+0.75*(1*count/3)
 
     stroke = False
-    if predict > 0.5:
+    if predict > 0.49:
         stroke = True
-    print(stroke , predict)
-    return jsonify( { "stroke" , stroke } )
+    print(stroke , round(predict, 4),data['systolic'] , count)
+    return jsonify( { "stroke" : stroke } )
 
 
 
-
-"""
-
-Object {   "age": 54,
-"diastolic": 75,
-"equip": false,
-"gammaMid": 1081652,
-"heart_disease": true,
-"heartrate": 77,
-"height": 180,
-"hypertension": true,
-"id": 55,
-"name": "hel",
-"res_type": "Urban",
-"smoke": true,
-"systolic": 104,
-"temperature": 33.5,
-"weight": 88,
-"work_type": "Private",
- }
-
-"""
 
 
 

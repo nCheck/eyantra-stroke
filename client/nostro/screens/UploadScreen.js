@@ -108,11 +108,12 @@ export default class UploadScreen extends React.Component {
 
         await axios.post(IP+':5000/predict', { data : data } ).then( res =>{
           console.log(res.data)
+          this.props.navigation.navigate( 'Doctor' , { prediction : res.data['stroke'] } )
         } ).catch( err =>{
           console.log( "Error" , err )
         } )
 
-        this.props.navigation.navigate( 'Doctor' , { prediction : true } )
+        
 
     }
 

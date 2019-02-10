@@ -13,61 +13,10 @@ import IP from '../constants/Address'
 //        '[work_type_Self-employed', '[work_type_children', 'res_type_Rural',
 //        'res_type_Urban']
 
-var work = t.enums({
-    Govt_job : 'Government',
-    Private : 'Private',
-    'Self-employed' : 'Self-employed',
-    Never_worked : 'Not Working',
 
-})
 
-var res = t.enums({
-    Rural : 'Rural Area',
-    Urban : 'Urban Area'
 
-})
-
-const fund = t.struct({
-    name: t.String,
-    id: t.Number,
-    age: t.Number,
-    hypertension: t.Boolean,
-    heart_disease : t.Boolean,
-    height : t.Number,
-    weight : t.Number,
-    work_type : work,
-    res_type : res,
-    smoke : t.Boolean,
-    equip : t.Boolean
-
-  });
-
-const formOption = {
-fields: {
-    equip: {
-    label: 'Do you have our Sensors?'
-    },
-    smoke :{
-        label: "Do you smoke?"
-    },
-    hypertension:{
-        label: "Do you have Hypertension?"
-    },
-    work_type:{
-        label: "Where do you work?"
-    },
-    res_type:{
-        label: "Where do you live?"
-    },
-    heart_disease:{
-        label: "Do you have heart-disease?"
-    }
-}
-}
-
-const Form = t.form.Form;
-
-export default class HomeScreen extends React.Component {
+export default class DoctorScreen extends React.Component {
 
     constructor(props) {
         super(props);
@@ -87,6 +36,10 @@ export default class HomeScreen extends React.Component {
         this.props.navigation.navigate( 'Upload' , { demoData : value } )
     }
 
+    componentDidMount(){
+        console.log(this.props.navigation.state.params.other , "info ")
+    }
+
 
   render() {
     return (
@@ -97,25 +50,26 @@ export default class HomeScreen extends React.Component {
 
             <View style={styles.container}>
         
-            <Form 
-            type={ fund }
-            value={ this.state.value }
-            onChange={ this.handleChange }
-            options={formOption}
-            ref={c => this._form = c} 
-            />
+            {
+                this.props.navigation.state.params.prediction ?
+                <View>
+                <Button full bordered danger style={{ padding: 10 , margin:20}} >
+                <Text style={ { fontSize: 20 } } > You are risk of stroke </Text>
+                 </Button>
+                <Button full bordered style={{ padding: 10 , margin:20}} >
+                <Text style={ { fontSize: 20 } } > Click here to Contact Doctor </Text>
+                </Button>
+                </View>  :
+                <Button full bordered success style={{ padding: 10 , margin:20}} >
+                <Text style={ { fontSize: 20 } } > Congrats, there's no risk of stroke </Text>
+                </Button>                
+            }
 
             </View>
 
             </Content>
 
             <Footer>
-
-            <Button full
-            onPress={ this.handleSubmit }
-            >
-              <Text style={ styles.text } > Submit </Text>
-            </Button>
 
             </Footer>
 

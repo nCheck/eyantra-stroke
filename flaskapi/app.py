@@ -7,6 +7,8 @@ from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
 import logging
 import requests, json
+import pandas as pd
+
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger('flask_cors').level = logging.DEBUG
@@ -57,6 +59,28 @@ def home():
     print(ans)
     return jsonify( { "ans" : str(ans) } )
 
+
+
+@app.route('/loadCSV', methods=['GET'])
+def data():
+    print("loaded")
+    testData = pd.read_csv("upload/temp.csv")
+    print(testData)
+    print(testData.columns)
+    data = testData.columns
+    print()
+    return jsonify( { 'sys': data[0] , 'dis' : data[1], 'hrt' : data[2], 'temp' : testData[data[1]][0]  } )
+
+@app.route('/loadEEG', methods=['GET'])
+def gamma():
+    print("loaded")
+    df = pd.read_csv('upload/eeg.csv')
+    data = df['gammaMid'].median()
+    print()
+    return jsonify( { 'gammaMid' : data } )
+
+
+
 @app.route('/test', methods=['POST'])
 def test():
     print( json.dumps( request.form ) )
@@ -65,4 +89,4 @@ def test():
     print(ans)
     return jsonify( { "ans" : "done" } )
 
-app.run()
+app.run(host='0.0.0.0',port=5000)

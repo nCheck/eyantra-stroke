@@ -5,7 +5,6 @@ import { Container, Content, Footer, Button } from 'native-base'
 import { DocumentPicker } from 'expo';
 import axios from 'axios'
 import IP from '../constants/Address'
-// import reader from '../ctrlr/file'
 
 
 // ['age', 'hypertension', 'heart_disease', 'bmi', '[work_type_Govt_job',
@@ -13,19 +12,7 @@ import IP from '../constants/Address'
 //        '[work_type_Self-employed', '[work_type_children', 'res_type_Rural',
 //        'res_type_Urban']
 
-var work = t.enums({
-    Govt_job : 'Government',
-    Private : 'Private',
-    'Self-employed' : 'Self-employed',
-    Never_worked : 'Never_worked',
 
-})
-
-var res = t.enums({
-    Rural : 'Rural',
-    Urban : 'Urban'
-
-})
 
 const fund = t.struct({
     systolic: t.Number,
@@ -41,24 +28,62 @@ export default class UploadScreen extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { chosenDate: new Date() , selectedFile : '' , value : ''  };
+        this.state = { selectedFile : '' , value : '',
+                systolic : '' , diastolic: '' , temperature: '', heartrate: '',
+                dataLoaded : false, value : '' , gammaMid : ''
+              };
     
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this._pickDocument = this._pickDocument.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
+        this.handleLoad = this.handleLoad.bind(this);
+      }
+
+      async handleLoad(){
+
+        var config = { headers: {  
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'}
+        }
+
+        var ts = this;
+
+        await axios.get(IP+":9966/api/loadCSV"  , config
+        )
+        .then(function (response) {
+          var data = JSON.parse( response.data.data );
+ 
+          var value = { systolic : data['sys'], 
+          diastolic : data['dis'] , heartrate : data['hrt'],
+          temperature : data['temp'] , dataLoaded : true }
+
+          ts.setState( { value } )
+          ts.setState( { dataLoaded : true  } )
+
+          
+        })
+        .catch(function (error) {
+          console.log( error )
+          console.log("Eror")
+        });        
       }
 
       async handleUpload() {
         const data = new FormData()
         data.append('file', this.state.selectedFile, this.state.selectedFile.name)
-        console.log(data)
-        await axios.post(IP+':9966/api/uploadFile', data )
+        await axios.post(IP+':9966/api/uploadEEG', data )
         .then(res => {
-          // console.log(res);
           console.log(res.data);
         }).catch( err =>{
           console.log( err )
+        } )
+
+        await axios.get( IP+':5000/loadEEG').then( res =>{
+          console.log(res.data['gammaMid'], "gammaMid")
+          this.setState({ gammaMid : res.data['gammaMid'] } )
+        } ).catch( err =>{
+          console.log( "Error" , err )
         } )
     
       }      
@@ -66,7 +91,7 @@ export default class UploadScreen extends React.Component {
 
     _pickDocument = async () => {
       let result = await DocumentPicker.getDocumentAsync({});
-      result['type'] = 'application/xlsx';
+      result['type'] = 'application/csv';
       this.setState({ selectedFile : result })
       this.handleUpload();
 
@@ -78,28 +103,9 @@ export default class UploadScreen extends React.Component {
 
     async handleSubmit(){
         var value = this._form.getValue();
-        console.log(value)
-
-        const data = new FormData();
-        // data.append('file', this.state.fileData);
-        // data.append('filename', this.state.fileData.name);
-
-        var config = { headers: {  
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'}
-        }
-
-        demoData = this.props.navigation.state.params.demoData
-
-        value = { ...value , ...demoData }
-
-        await axios.post(IP+':9966/api/predict', { form : value })
-        .then(res => {
-          // console.log(res);
-          console.log(res.data);
-        }).catch( err =>{
-          console.log( err )
-        } )
+        const data = { ...value , gammaMid : this.state.gammaMid , ...this.props.navigation.state.params.demoData }
+        console.log(data)
+        this.props.navigation.navigate( 'Doctor' , { prediction : true } )
 
     }
 
@@ -113,18 +119,32 @@ export default class UploadScreen extends React.Component {
 
             <View style={styles.container}>
         
-            <Form 
-            type={ fund }
-            value={ this.state.value }
-            onChange={ this.handleChange }
-            ref={c => this._form = c} 
-            />
+            <Button full
+            onPress={ this.handleLoad }
+            >
+              <Text style={ styles.text } > Load Data </Text>
+            </Button>
+
+            {
+               ! this.state.dataLoaded ? 
+              <Text> Not Loaded </Text> :
+              
+              <Form 
+              type={ fund }
+              value={ this.state.value }
+              onChange={ this.handleChange }
+              ref={c => this._form = c} 
+              />
+
+            }
 
             <Button full
             onPress={ this._pickDocument }
             >
               <Text style={ styles.text } > Upload EEG </Text>
             </Button>
+
+
 
             </View>
 
@@ -163,17 +183,3 @@ const styles = StyleSheet.create({
 
 
 
-
-
-
-        //Demo Get Request
-        // await axios.get("http://192.168.1.106:9966/"  , config
-        // )
-        // .then(function (response) {
-        //   console.log( response.data )
-        //   var opt = response.data
-        //   props.navigation.navigate('Demo' , { other : opt['message'] })
-        // })
-        // .catch(function (error) {
-        //   props.navigation.navigate('Home' , { other : error })
-        // });

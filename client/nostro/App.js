@@ -6,6 +6,7 @@ import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen'
 import UploadScreen from './screens/UploadScreen';
 import DemoScreen from './screens/DemoScreen';
+import DoctorScreen from './screens/DoctorScreen';
 
 
 
@@ -15,7 +16,8 @@ const MainCon = createStackNavigator(
     Home : { screen : HomeScreen },
     Login : { screen : LoginScreen },
     Upload : { screen : UploadScreen },
-    Demo : { screen : DemoScreen }
+    Demo : { screen : DemoScreen },
+    Doctor : { screen : DoctorScreen }
   },
   {
     initialRouteName : 'Login'

@@ -13,34 +13,8 @@ import IP from '../constants/Address'
 //        '[work_type_Self-employed', '[work_type_children', 'res_type_Rural',
 //        'res_type_Urban']
 
-var work = t.enums({
-    Govt_job : 'Government',
-    Private : 'Private',
-    'Self-employed' : 'Self-employed',
-    Never_worked : 'Never_worked',
 
-})
 
-var res = t.enums({
-    Rural : 'Rural',
-    Urban : 'Urban'
-
-})
-
-const fund = t.struct({
-    name: t.String,
-    id: t.Number,
-    age: t.Number,
-    hypertension: t.Boolean,
-    heart_disease : t.Boolean,
-    height : t.Number,
-    weight : t.Number,
-    work_type : work,
-    res_type : res
-
-  });
-
-const Form = t.form.Form;
 
 export default class DemoScreen extends React.Component {
 
@@ -76,9 +50,8 @@ export default class DemoScreen extends React.Component {
 
             <View style={styles.container}>
         
-            <Text>
-                { JSON.stringify( this.props.other ) }
-            </Text>
+
+
 
             </View>
 

@@ -14,11 +14,22 @@ router.route('/test')
 router.route('/predict')
     .post(uniCtrl.predict)    
 
-router.route('/uploadFile')
-    .post(upCtrl.uploadFile)
+router.route('/uploadEEG')
+    .post(upCtrl.uploadEEG)
+
+router.route('/loadCSV')
+    .get( upCtrl.loadCSV )
+
+router.route('/uploadCSV')
+    .post( upCtrl.uploadSEN )
+
+
+
 
 router.route('/upload')
     .post(uniCtrl.uploadRecord)
+
+
 
 
 

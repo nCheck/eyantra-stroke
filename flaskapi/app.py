@@ -4,7 +4,7 @@
 # Author List: Nehal Kalnad,Ashley Lobo, e-Yantra Team 
 # Filename: app.py 
 # Functions: loadCSV , loadEEG , checker, predict
-# Global Variables:	smokeModel , scaler, app
+# Global Variables:	model , scaler, app
 
 
 """			
@@ -23,8 +23,8 @@ import pandas as pd
 
 
 
-smokeModel = load('smokemlp.joblib')
-scaler = load('scaler.joblib')
+model = load('regmodel.joblib')
+
 
 
 
@@ -120,7 +120,7 @@ def predict():
     # print( json.dumps( request.json['data'] ) )
 
     data = request.json['data'] 
-
+    print(data)
     print( type(data) )
     age = data['age']
     hypertension = checker( data['hypertension'] )
@@ -151,8 +151,9 @@ def predict():
     smoke_formerly_smoked ,	smoke_never_smoked ,smoke_smokes]
 
 
-    df = scaler.transform([df])
-    ans = smokeModel.predict_proba( df )[0]
+
+    ans = model.predict_proba( [df] )[0]
+    print(ans)
     if ans[1] < 0.1:
         ans[1] = 0
 
@@ -163,7 +164,7 @@ def predict():
         count+=1
     if data['gammaMid'] > 9769:
         count+=1
-    predict = 0.25*(ans[1])+0.75*(1*count/3)
+    predict = 0.6*(ans[1])+0.4*(1*count/3)
 
     stroke = False
     if predict > 0.49:

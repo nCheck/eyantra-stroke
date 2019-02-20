@@ -82,7 +82,7 @@ export default class HomeScreen extends React.Component {
 
     handleSubmit(){
         const value = this._form.getValue();
-        console.log(value)
+        console.log(value, "home form data")
         this.props.navigation.navigate( 'Upload' , { demoData : value } )
     }
 

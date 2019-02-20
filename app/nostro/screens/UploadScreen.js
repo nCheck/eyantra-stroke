@@ -15,7 +15,7 @@ const fund = t.struct({
     diastolic: t.Number,
     temperature : t.Number,
     heartrate : t.Number,
-
+    gammaMid : t.Number
   });
 
 const Form = t.form.Form;
@@ -44,15 +44,23 @@ export default class UploadScreen extends React.Component {
         }
 
         var ts = this;
+        
+        await axios.get( IP+':5000/loadEEG').then( res =>{
+          console.log(res.data['gammaMid'], "gammaMid")
+          this.setState({ gammaMid : res.data['gammaMid'] } )
+        } ).catch( err =>{
+          console.log( "Error" , err )
+        } )        
 
         await axios.get(IP+":9966/api/loadCSV"  , config
         )
         .then(function (response) {
           var data = JSON.parse( response.data.data );
  
+          var gammaMid = ts.state.gammaMid;
           var value = { systolic : data['sys'], 
           diastolic : data['dis'] , heartrate : data['hrt'],
-          temperature : data['temp'] , dataLoaded : true }
+          temperature : data['temp'] , dataLoaded : true , gammaMid }
 
           ts.setState( { value } )
           ts.setState( { dataLoaded : true  } )
@@ -63,6 +71,8 @@ export default class UploadScreen extends React.Component {
           console.log( error )
           console.log("Eror")
         });        
+
+
       }
 
       async handleUpload() {
@@ -75,12 +85,6 @@ export default class UploadScreen extends React.Component {
           console.log( err )
         } )
 
-        await axios.get( IP+':5000/loadEEG').then( res =>{
-          console.log(res.data['gammaMid'], "gammaMid")
-          this.setState({ gammaMid : res.data['gammaMid'] } )
-        } ).catch( err =>{
-          console.log( "Error" , err )
-        } )
     
       }      
       
@@ -122,9 +126,18 @@ export default class UploadScreen extends React.Component {
             <Content>
 
             <View style={styles.container}>
-        
+
+            <Button full
+            onPress={ this._pickDocument }
+            >
+              <Text style={ styles.text } > Upload EEG </Text>
+            </Button>
+
+
+
             <Button full
             onPress={ this.handleLoad }
+            style = {styles.buttonPad}
             >
               <Text style={ styles.text } > Load Data </Text>
             </Button>
@@ -142,11 +155,6 @@ export default class UploadScreen extends React.Component {
 
             }
 
-            <Button full
-            onPress={ this._pickDocument }
-            >
-              <Text style={ styles.text } > Upload EEG </Text>
-            </Button>
 
 
 
@@ -181,6 +189,9 @@ const styles = StyleSheet.create({
         fontSize : 25,
         fontWeight: 'bold'
         
+    },
+    buttonPad :{
+      marginTop : 10
     }
 });
 

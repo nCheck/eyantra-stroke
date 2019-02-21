@@ -9,7 +9,6 @@ import IP from '../constants/Address'
 
 
 
-
 const fund = t.struct({
     systolic: t.Number,
     diastolic: t.Number,
@@ -105,6 +104,12 @@ export default class UploadScreen extends React.Component {
         var value = this._form.getValue();
         const data = { ...value , gammaMid : this.state.gammaMid , ...this.props.navigation.state.params.demoData }
         console.log(data)
+
+        await axios.post(IP+':9966/api/uploadRecord', { ...data } ).then( res =>{
+          console.log(res.data)
+        } ).catch( err =>{
+          console.log( "Error" , err )
+        } )        
 
         await axios.post(IP+':5000/predict', { data : data } ).then( res =>{
           console.log(res.data)

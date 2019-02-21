@@ -4,18 +4,25 @@ var Schema = mongoose.Schema
 
 var recSchema = new Schema({
 
-    BP_sys : Number,
-    BP_dys : Number,
-    AH : Number,
-    AL : Number,
-    BH : Number,
-    BL : Number,
-    TH : Number,
-    TL : Number,
-    GH : Number,
-    GL : Number,
+    age : Number,
+    diastolic : Number,
+    systolic : Number,
+    temperature : Number,
+    weight : Number,
+    equiq : Number,
+    gammaMid : Number,
+    heart_disease : Number,
+    heartrate : Number,
+    height : Number,
+    hypertension : Boolean,
+    id : Number,
+    name : String,
+    res_type : String,
+    work_type : String,
+    smoke : String,
 
-    patientId : Number,
+
+
 
     prediction : {
         type : Number,

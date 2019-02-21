@@ -33,7 +33,7 @@ router.route('/uploadCSV')
 
 
 
-router.route('/upload')
+router.route('/uploadRecord')
     .post(uniCtrl.uploadRecord)
 
 

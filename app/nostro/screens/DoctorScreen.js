@@ -1,7 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Container, Content, Footer, Button } from 'native-base'
+import call from 'react-native-phone-call'
 
+const contact = {
+  number: '09819601109', // String value with the number to call
+  prompt: true // Optional boolean property. Determines if the user should be prompt prior to the call 
+}
 
 
 
@@ -20,9 +25,7 @@ export default class DoctorScreen extends React.Component {
     }
 
     handleSubmit(){
-        const value = this._form.getValue();
-        console.log(value)
-        this.props.navigation.navigate( 'Upload' , { demoData : value } )
+        call(contact).catch(console.error)
     }
 
     componentDidMount(){
@@ -45,7 +48,9 @@ export default class DoctorScreen extends React.Component {
                 <Button full bordered danger style={{ padding: 10 , margin:20}} >
                 <Text style={ { fontSize: 20 } } > You are risk of stroke </Text>
                  </Button>
-                <Button full bordered style={{ padding: 10 , margin:20}} >
+                <Button full bordered style={{ padding: 10 , margin:20}}
+                onPress = { this.handleSubmit } 
+                >
                 <Text style={ { fontSize: 20 } } > Click here to Contact Doctor </Text>
                 </Button>
                 </View>  :

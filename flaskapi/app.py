@@ -162,7 +162,7 @@ def predict():
         count+=1
     if data['temperature']> 41:
         count+=1
-    if data['gammaMid'] > 9769:
+    if data['gammaMid'] > 100000:
         count+=1
     predict = 0.6*(ans[1])+0.4*(1*count/3)
 
